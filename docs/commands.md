@@ -1,71 +1,50 @@
-## One command to know them all
+# Features #
 
-All the commands created in the `GEF` are available through the main `help`
-menu. Help is available with the command:
-```bash
-gef> gef help
-```
+This section will explain in details some non-trivial commands available in `GEF`
+with examples and screenshots to make it easier to reproduce.
 
-Syntax and description are available by invoking `help` followed by the
-command. For example,
-
-```bash
-gef> help gef-alias
-GEF defined aliases
-Syntax: gef-alias (set|show|do|unset)
-
-List of gef-alias subcommands:
-
-gef-alias do -- GEF do alias command
-gef-alias set -- GEF add alias command
-gef-alias show -- GEF show alias command
-gef-alias unset -- GEF remove alias command
-```
-
-### Configuration
-
-`gef` can also be configured at runtime through a configuration file locate at
-`~/.gef.rc`. To dump the current settings for `GEF`, simply run:
-
-```
-gef➤  gef save
-[+] Configuration saved to '/home/vagrant/.gef.rc'
-```
-
-And to load settings
-```
-gef➤  gef restore
-[+] Configuration from '/home/vagrant/.gef.rc' restored
-```
-
-You can then tweak this configuration outside your `gdb` session to suit your
-needs.
-
-
-### Commands
-
-Here are some of the most useful commands available in `GEF`. Have a look at the `Features` section for full explanation.
+__Note__: if you consider the documentation to be imprecise/incomplete,
+file an [Issue](https://github.com/hugsy/gef/issues/86) or better,
+create a a [Pull Request](https://github.com/hugsy/gef/pulls) to the project to help
+improve it.
 
 | Command    | Description |
 |:-----------|----------------:|
-| `entry-break` | Tries to find best entry point and sets a temporary breakpoint on it. |
-| `elf-info` | Display ELF header informations. |
-| `aslr` | view/modify GDB ASLR behavior. |
-| `checksec` | [Checksec.sh](http://www.trapkit.de/tools/checksec.html) port. |
-| `context` | Display execution context. |
-|`xinfo` | Get virtual section information for specific address|
-|`heap` | Get some information about the Glibc heap structure.|
-|`ctf-exploit-templater` | Generates a ready-to-use exploit template for CTF.|
-|`deref` | Dereference recursively an address and display information|
-|`vmmap` | Display virtual memory mapping|
-|`dump-memory` | Dump chunks of memory into raw file on the filesystem. Dump file name template can be defined in GEF runtime config|
-|`fd` | Enumerate file descriptors opened by process.|
-|`gef-alias` | GEF defined aliases|
-|`ksymaddr` | Get kernel address|
-|`pattern` | Metasploit-like pattern generation/search|
-|`reset-cache` | Reset cache of all stored data.|
-|`ropgadget` | [ROPGadget](http://shell-storm.org/project/ROPgadget) plugin|
-|`shellcode` | ShellcodeCommand uses [ShellStorm shellcode API](http://shell-storm.org/shellcode/) to search and download shellcodes|
-|`trace-run` | Create a runtime trace of all instructions executed from $pc to LOCATION specified.|
-|`xfiles` | Shows all libraries (and sections) loaded by binary (Truth is out there).|
-|`xor-memory` | XOR a block of memory.|
+|aslr                      | View/modify GDB ASLR behavior.|
+|assemble                  | Inline code assemble. Architecture can be set in GEF runtime config (default is x86).  (alias: asm) |
+|capstone-disassemble      | Use capstone disassembly framework to disassemble code. (alias: cs-dis) |
+|checksec                  | Checksec.sh(http://www.trapkit.de/tools/checksec.html) port. |
+|context                   | Display execution context. (alias: ctx)|
+|dereference               | Dereference recursively an address and display information (alias: telescope, dps)|
+|edit-flags                | Edit flags in a human friendly way (alias: flags)|
+|elf-info                  | Display ELF header informations.|
+|entry-break               | Tries to find best entry point and sets a temporary breakpoint on it. (alias: start-break)|
+|format-string-helper      | Exploitable format-string helper: this command will set up specific breakpoints at well-known dangerous functions (printf, snprintf, etc.), and check if the pointer holding the format string is writable, and  susceptible to format string attacks if an attacker can control its content. (alias: fmtstr-helper)|
+|gef-alias                 | GEF defined aliases|
+|gef-remote                | gef wrapper for the `target remote` command. This command will automatically download the target binary in the local temporary directory (defaut /tmp) and then source it. Additionally, it will fetch all the /proc/PID/maps and loads all its information.|
+|heap                      | Base command to get information about the Glibc heap structure.|
+|hexdump                   | Display arranged hexdump (according to architecture endianness) of memory range.|
+|hijack-fd                 | ChangeFdCommand: redirect file descriptor during runtime.|
+|ida-interact              | IDA Interact: set of commands to interact with IDA via a XML RPC service deployed via the IDA script `ida_gef.py`. It should be noted that this command can also be used to interact with Binary Ninja (using the script `binja_gef.py`) using the same interface. (alias: binaryninja-interact, bn, binja)|
+|ksymaddr                  | Solve kernel symbols from kallsyms table.|
+|memory                    | Add memory watches to the context view.|
+|nop                       | Patch the instruction pointed by parameters with NOP. If the return option is specified, it will set the return register to the specific value.|
+|patch                     | Write specified values to the specified address.|
+|pattern                   | This command will create or search a De Bruijn cyclic pattern to facilitate determining the offset in memory. The algorithm used is the same as the one used by pwntools, and can therefore be used in conjunction.|
+|pcustom                   | Dump user defined structure. This command attempts to reproduce WinDBG awesome `dt` command for GDB and allows to apply structures (from symbols or custom) directly to an address. Custom structures can be defined in pure Python using ctypes, and should be stored in a specific directory, whose path must be stored in the `pcustom.struct_path` configuration setting. (alias: dt)|
+|process-search            | List and filter process. (alias: ps)|
+|process-status            | Extends the info given by GDB `info proc`, by giving an exhaustive description of the process status.|
+|registers                 | Display full details on one, many or all registers value from current architecture.|
+|reset-cache               | Reset cache of all stored data.|
+|retdec                    | Decompile code from GDB context using RetDec API. (alias: decompile)|
+|ropper                    | Ropper (http://scoding.de/ropper) plugin|
+|search-pattern            | SearchPatternCommand: search a pattern in memory. (alias: grep)|
+|set-permission            | Change a page permission. By default, it will change it to RWX. (alias: mprotect)|
+|shellcode                 | ShellcodeCommand uses @JonathanSalwan simple-yet-awesome shellcode API to download shellcodes.|
+|stub                      | Stub out the specified function.|
+|trace-run                 | Create a runtime trace of all instructions executed from $pc to LOCATION specified.|
+|unicorn-emulate           | Use Unicorn-Engine to emulate the behavior of the binary, without affecting the GDB runtime. By default the command will emulate only the next instruction, but location and number of instruction can be changed via arguments to the command line. By default, it will emulate the next instruction from current PC. (alias: emulate)|
+|vmmap                     | Display virtual memory mapping|
+|xfiles                    | Shows all libraries (and sections) loaded by binary (Truth is out there).|
+|xinfo                     | Get virtual section information for specific address|
+|xor-memory                | XOR a block of memory.|
